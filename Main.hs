@@ -2,6 +2,7 @@ module Main where
 
 import Text.ParserCombinators.Parsec hiding (spaces)
 import System.Environment
+import System.IO
 import Control.Monad
 import Control.Monad.Error
 
@@ -31,9 +32,12 @@ type ThrowsError = Either LispError
 
 main :: IO ()
 main = do
-	args <- getArgs	
-	evaled <- return $ liftM show $ readExpr (args !! 0) >>= eval
+	putStr "> "
+	hFlush stdout
+	args <- getLine
+	evaled <- return $ liftM show $ readExpr args >>= eval
 	putStrLn $ extractValue $ trapError evaled
+	main
 
 symbol :: Parser Char
 symbol = oneOf "!$%&|*+-/:<=?>@^_~#"
